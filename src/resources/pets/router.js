@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { createOne, getAll, getOneById, updatePetById, updateOneByName, deleteOneById } = require("./controller");
+const { createOne, getAll, getOneById, updatePetById, updateOneByName, deleteOneById, patchOnebyName} = require("./controller");
 
 const router = express.Router();
 
@@ -20,5 +20,7 @@ router.put("/:id", updatePetById);
 router.put("/pet/:name", updateOneByName);
 
 router.delete("/:id", deleteOneById)
+
+router.patch("/:name", patchOnebyName);
 
 module.exports = router;

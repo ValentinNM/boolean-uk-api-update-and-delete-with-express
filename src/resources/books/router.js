@@ -7,7 +7,8 @@ const {
     getOneById,
     updateOneById,
     updateOneByTitle,
-    deleteOneById
+    deleteOneById,
+    patchOneById
     } = require("./controller");
 
 const router = express.Router();
@@ -18,11 +19,9 @@ router.get("/", getAll);
 
 router.get("/:id", getOneById);
 
-router.put("/:id", updateOneById)
-// router.patch("/:id", (req, res) => { 
-//     console.log("inside router patch: ", req.body)
-//     // console.log(" inside here: ", res.json({ data : "kiwi" }))
-// })
+router.put("/:id", updateOneById);
+
+router.patch("/:id",patchOneById);
 
 router.put("/book/:name", updateOneByTitle);
 // router.put("/:id", (req, res) => { 

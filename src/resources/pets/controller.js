@@ -117,11 +117,47 @@ function deleteOneById(req, res) {
   .catch(console.error)
 }
 
+function patchOnebyName(req, res) { 
+
+  const name = req.params.name;
+
+  const petToUpdate = req.body;
+  console.log("petToUpdate: ", petToUpdate)
+
+  
+  let sqlTemplate = `
+  UPDATE pets SET
+  `;
+
+  const sqlParams = [];
+  
+  let i = 1;
+  for (const key in petToUpdate) { 
+    sqlTemplate += ` ${key} = $${i++}`;
+    sqlTemplate += `,`
+    sqlParams.push(petToUpdate[key]);
+  }
+  
+  sqlParams.push(name); 
+
+  sqlTemplate = sqlTemplate.slice(0, sqlTemplate.length - 1);
+  sqlTemplate += `WHERE name = $${i} RETURNING *;`
+
+  console.log("sqlTemplate: ", sqlTemplate);
+  console.log("sqlParams: ", sqlParams);
+
+  db.query(sqlTemplate, sqlParams)
+  .then((result) => res.json({ updated_pet: result.rows[0] }))
+  .catch(console.error);
+  // res.json({ data : true});
+}
+
 module.exports = {
   createOne,
   getAll,
   getOneById,
   updatePetById,
   updateOneByName,
-  deleteOneById
+  deleteOneById,
+  patchOnebyName
 };

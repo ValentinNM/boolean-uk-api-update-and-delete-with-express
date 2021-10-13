@@ -129,11 +129,52 @@ function deleteOneById(req, res) {
 
 }
 
+
+function patchOneById(req, res) { 
+
+  const id = req.params.id;
+    // const bookToUpdate = {
+    //   id: req.parmas.id, 
+    //   body: {...req.body}
+    // }
+    const bookToUpdate = req.body;
+
+    // const {id, body} = bookToUpdate;
+
+    console.log("bookToUpdate: ", bookToUpdate);  // req.body
+
+    let sqlTemplate = `
+        UPDATE books SET
+        `;
+
+    const sqlParams = [];
+
+    let i = 1;
+    for (const key in bookToUpdate){
+      sqlTemplate += ` ${key} = $${i++}`;
+      sqlTemplate += `,`
+      sqlParams.push(bookToUpdate[key]);
+    }
+
+    sqlParams.push(id);
+
+    sqlTemplate = sqlTemplate.slice(0, sqlTemplate.length - 1);
+    sqlTemplate += `WHERE id = $${i} RETURNING *;`
+
+        console.log("sqlTemplate:", sqlTemplate);
+        console.log("sqlParams: ", sqlParams);
+
+    db.query(sqlTemplate, sqlParams)
+    .then(result => res.json({last_updated : result.rows[0]}))
+    .catch(console.error);
+}
+
 module.exports = {
   createOne,
   getAll,
   getOneById,
   updateOneById,
   updateOneByTitle,
-  deleteOneById
+  deleteOneById,
+  patchOneById
 };
