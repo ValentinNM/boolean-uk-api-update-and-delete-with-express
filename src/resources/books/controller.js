@@ -129,8 +129,7 @@ function deleteOneById(req, res) {
 
 }
 
-
-function patchOneById(req, res) { 
+const patchOneById = async(req, res) => { 
 
   const id = req.params.id;
     // const bookToUpdate = {
@@ -164,9 +163,20 @@ function patchOneById(req, res) {
         console.log("sqlTemplate:", sqlTemplate);
         console.log("sqlParams: ", sqlParams);
 
-    db.query(sqlTemplate, sqlParams)
-    .then(result => res.json({last_updated : result.rows[0]}))
-    .catch(console.error);
+        //db.query(sqlTemplate, sqlParams)
+        // .then(result => res.json({last_updated : result.rows[0]}))
+        // .catch(console.error);
+
+    // async way // try and catch come togheter as part of the synatx 
+      try {
+        const result =  await db.query(sqlTemplate, sqlParams) 
+        res.json({data : result.rows[0]});
+      } catch(error) {
+
+        console.error("[ERROR] patchOneById: ", {error: error.message});
+
+        res.status(500).json({error : error.message});
+      }
 }
 
 module.exports = {
